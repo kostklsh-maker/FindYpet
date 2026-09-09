@@ -1,141 +1,125 @@
-
 <!DOCTYPE html>
-
 <html lang="en">
-
 <head>
-
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Pet Found!</title>
-
+    <title>FindYpet — Pet Found!</title>
     <style>
-
-        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; background-color: #f7f9fa; }
-
-        .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); max-width: 400px; margin: 0 auto; }
-
-        .btn { display: inline-block; padding: 12px 24px; background-color: #28a745; color: white; text-decoration: none; border-radius: 8px; font-weight: bold; margin-top: 15px; }
-
-        #status { margin-top: 15px; font-size: 14px; color: #666; }
-
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+            background-color: #f4f8f9;
+            margin: 0;
+        }
+        .card {
+            background: white;
+            padding: 25px 20px;
+            border-radius: 16px;
+            box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+            max-width: 400px;
+            margin: 20px auto;
+        }
+        .logo {
+            width: 140px;
+            height: auto;
+            margin-bottom: 15px;
+        }
+        h1 {
+            color: #0098a6;
+            font-size: 22px;
+            margin-bottom: 10px;
+        }
+        p {
+            color: #444;
+            font-size: 15px;
+            line-height: 1.4;
+        }
+        .btn {
+            display: inline-block;
+            padding: 14px 28px;
+            background-color: #ff7a18;
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 16px;
+            margin-top: 15px;
+            box-shadow: 0 4px 10px rgba(255, 122, 24, 0.3);
+        }
+        #status {
+            margin-top: 20px;
+            font-size: 13px;
+            color: #777;
+        }
     </style>
-
 </head>
-
 <body>
 
     <div class="card">
+        <!-- FindYpet Logo -->
+        <img src="logo.png" alt="FindYpet Logo" class="logo">
 
-        <h1>🐾 Hi! I am lost</h1>
+        <h1>🐾 I'm lost!</h1>
+        <p>Please help me get back home. Tap the button below to contact my owner.</p>
 
-        <p>My name is <b>Sam</b>. Please help me get back home!</p>
-
-        <p>Owner's phone: <b>+972-52-6279522</b></p>
-
-        <a href="tel:+972526279522" class="btn">📞 Call owner</a>
+        <!-- Call Button -->
+        <a href="tel:+972500000000" class="btn">📞 Call Owner</a>
 
         <div id="status">Requesting location to send to the owner...</div>
-
     </div>
 
-
     <script>
+        // 1. Get Pet ID from URL (e.g., ?id=101)
+        const urlParams = new URLSearchParams(window.location.search);
+        const petId = urlParams.get('id') || '101'; // '101' default for testing
 
-        const BOT_TOKEN = "8934928926:AAHbwedn-BfBBz264ezehBZz4Wsblfc5D7A";
-
-        const CHAT_ID = "184307846";
-
+        // =========================================================================
+        // 2. PASTE YOUR GOOGLE APPS SCRIPT WEB APP URL HERE
+        // =========================================================================
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwNXGQOHVvsgqs8pdchbjncEq0VVaR81HQMx7Fj4IOSOVqAMkk4R6ktfKhkejDXKjOf/exec
+';
+        // =========================================================================
 
         function sendLocation() {
-
             const statusDiv = document.getElementById("status");
 
-
             if ("geolocation" in navigator) {
-
                 navigator.geolocation.getCurrentPosition(
-
                     (position) => {
-
                         const lat = position.coords.latitude;
-
                         const lon = position.coords.longitude;
 
-
-                        fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendLocation`, {
-
+                        // Send coordinates to Google Apps Script backend
+                        fetch(SCRIPT_URL, {
                             method: "POST",
-
+                            mode: "no-cors", // Required to bypass CORS rules in Google Apps Script
                             headers: { "Content-Type": "application/json" },
-
                             body: JSON.stringify({
-
-                                chat_id: CHAT_ID,
-
+                                pet_id: petId,
                                 latitude: lat,
-
                                 longitude: lon
-
                             })
-
                         });
 
-
-                        const mapUrl = `https://maps.google.com/?q=${lat},${lon}`;
-
-                        const message = `🚨 <b>Tag scanned!</b>\n\n📍 Geolocation: <a href="${mapUrl}">Open on Google Maps</a>`;
-
-
-                        fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-
-                            method: "POST",
-
-                            headers: { "Content-Type": "application/json" },
-
-                            body: JSON.stringify({
-
-                                chat_id: CHAT_ID,
-
-                                text: message,
-
-                                parse_mode: "HTML"
-
-                            })
-
-                        });
-
-
-                        statusDiv.innerText = "Your location has been successfully sent to the owner!";
-
+                        statusDiv.innerText = "📍 Your location has been sent to the owner!";
+                        statusDiv.style.color = "#28a745";
                     },
-
                     (error) => {
-
-                        statusDiv.innerText = "Location was not sent (access denied).";
-
+                        statusDiv.innerText = "Location not sent (access denied).";
+                        statusDiv.style.color = "#dc3545";
                     },
-
                     { enableHighAccuracy: true, timeout: 10000 }
-
                 );
-
             } else {
-
                 statusDiv.innerText = "Geolocation is not supported by your browser.";
-
             }
-
         }
 
-
+        // Trigger location request on page load
         window.onload = sendLocation;
-
     </script>
 
 </body>
-
 </html>
 
