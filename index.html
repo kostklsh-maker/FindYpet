@@ -1,125 +1,252 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FindYpet — Pet Found!</title>
+    <title>FindYpet — Smart Pet NFC Tag</title>
     <style>
+        :root {
+            --primary: #0098a6;
+            --accent: #ff7a18;
+            --bg: #f8fafc;
+            --text: #334155;
+        }
         body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            padding: 20px;
-            background-color: #f4f8f9;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
+            padding: 0;
+            background-color: var(--bg);
+            color: var(--text);
         }
-        .card {
+        header {
             background: white;
-            padding: 25px 20px;
-            border-radius: 16px;
-            box-shadow: 0 6px 16px rgba(0,0,0,0.08);
-            max-width: 400px;
-            margin: 20px auto;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
-        .logo {
-            width: 140px;
-            height: auto;
-            margin-bottom: 15px;
-        }
-        h1 {
-            color: #0098a6;
-            font-size: 22px;
-            margin-bottom: 10px;
-        }
-        p {
-            color: #444;
-            font-size: 15px;
-            line-height: 1.4;
-        }
-        .btn {
-            display: inline-block;
-            padding: 14px 28px;
-            background-color: #ff7a18;
+        .logo { height: 45px; }
+        .lang-btn {
+            background: var(--primary);
             color: white;
-            text-decoration: none;
-            border-radius: 10px;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
             font-weight: bold;
-            font-size: 16px;
-            margin-top: 15px;
-            box-shadow: 0 4px 10px rgba(255, 122, 24, 0.3);
         }
-        #status {
+        .container { max-width: 800px; margin: 0 auto; padding: 20px; }
+        
+        /* Hero Section */
+        .hero { text-align: center; padding: 30px 10px; }
+        .hero h1 { color: var(--primary); font-size: 2.2rem; margin-bottom: 15px; }
+        .hero p { font-size: 1.1rem; line-height: 1.6; color: #475569; }
+        .price-badge {
+            display: inline-block;
+            background: var(--accent);
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+            padding: 10px 25px;
+            border-radius: 30px;
+            margin: 20px 0;
+            box-shadow: 0 4px 12px rgba(255, 122, 24, 0.3);
+        }
+
+        /* Comic Section */
+        .comic-section {
+            background: white;
+            padding: 30px 20px;
+            border-radius: 20px;
+            margin: 40px 0;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            text-align: center;
+        }
+        .comic-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 15px;
             margin-top: 20px;
-            font-size: 13px;
-            color: #777;
         }
+        .comic-card {
+            border: 2px dashed #e2e8f0;
+            border-radius: 12px;
+            padding: 15px;
+            background: #fafafa;
+        }
+        .comic-icon { font-size: 2.5rem; margin-bottom: 10px; }
+        .comic-step { font-weight: bold; color: var(--accent); margin-bottom: 5px; }
+
+        /* Order Form */
+        .order-form {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        }
+        .form-group { margin-bottom: 18px; text-align: start; }
+        .form-group label { display: block; margin-bottom: 6px; font-weight: 600; }
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            box-sizing: border-box;
+        }
+        .submit-btn {
+            width: 100%;
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 15px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .submit-btn:hover { background: #e0650d; }
     </style>
 </head>
 <body>
 
-    <div class="card">
-        <!-- FindYpet Logo -->
+    <header>
         <img src="logo.png" alt="FindYpet Logo" class="logo">
+        <button class="lang-btn" onclick="toggleLanguage()" id="langBtn">עברית</button>
+    </header>
 
-        <h1>🐾Hi! I'm Sammy and I'm lost!</h1>
-        <p>Please help me get back home. Tap the button below to contact my owner.</p>
+    <div class="container">
+        <!-- Hero Section -->
+        <section class="hero">
+            <h1 id="heroTitle">Never Lose Track of Your Best Friend</h1>
+            <p id="heroDesc">Every second counts when a pet is missing. Microchips require special scanners at vets, but FindYpet allows anyone with a smartphone to connect with you instantly and share your pet's precise location.</p>
+            <div class="price-badge" id="priceBadge">Only 100 ₪</div>
+        </section>
 
-        <!-- Call Button -->
-        <a href="tel:+972526279522" class="btn">📞 Call Owner</a>
+        <!-- Comic Instructions -->
+        <section class="comic-section">
+            <h2 id="comicTitle" style="color: var(--primary);">How It Works</h2>
+            <div class="comic-grid">
+                <div class="comic-card">
+                    <div class="comic-icon">🐕💨</div>
+                    <div class="comic-step" id="cStep1">Step 1</div>
+                    <p id="cText1">Pet gets lost on an unexpected adventure.</p>
+                </div>
+                <div class="comic-card">
+                    <div class="comic-icon">📲</div>
+                    <div class="comic-step" id="cStep2">Step 2</div>
+                    <p id="cText2">A passerby taps their phone to the FindYpet tag.</p>
+                </div>
+                <div class="comic-card">
+                    <div class="comic-icon">📍</div>
+                    <div class="comic-step" id="cStep3">Step 3</div>
+                    <p id="cText3">You instantly get a Telegram map alert with location.</p>
+                </div>
+                <div class="comic-card">
+                    <div class="comic-icon">🏠❤️</div>
+                    <div class="comic-step" id="cStep4">Step 4</div>
+                    <p id="cText4">Reunited together in just a few minutes!</p>
+                </div>
+            </div>
+        </section>
 
-        <div id="status">Requesting location to send to the owner...</div>
+        <!-- Order & Registration Form -->
+        <section class="order-form">
+            <h2 id="formTitle" style="color: var(--primary); text-align: center;">Order & Register Your Tag</h2>
+            <form id="tagForm">
+                <div class="form-group">
+                    <label id="lblOwnerName">Owner Full Name</label>
+                    <input type="text" required placeholder="John Doe">
+                </div>
+                <div class="form-group">
+                    <label id="lblPhone">Phone Number (Israel)</label>
+                    <input type="tel" required placeholder="050-0000000">
+                </div>
+                <div class="form-group">
+                    <label id="lblPetName">Pet's Name</label>
+                    <input type="text" required placeholder="Charlie">
+                </div>
+                <div class="form-group">
+                    <label id="lblPetPhoto">Upload Pet Photo (For UV Print)</label>
+                    <input type="file" accept="image/*" required>
+                </div>
+                <div class="form-group">
+                    <label id="lblAddress">Shipping Address</label>
+                    <input type="text" required placeholder="Street, City, Apartment">
+                </div>
+                <button type="submit" class="submit-btn" id="btnSubmit">Order Now — 100 ₪</button>
+            </form>
+        </section>
     </div>
 
     <script>
-        // 1. Get Pet ID from URL (e.g., ?id=101)
-        const urlParams = new URLSearchParams(window.location.search);
-        const petId = urlParams.get('id') || '101'; // '101' default for testing
+        let currentLang = 'en';
 
-        // =========================================================================
-        // 2. PASTE YOUR GOOGLE APPS SCRIPT WEB APP URL HERE
-        // =========================================================================
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwNXGQOHVvsgqs8pdchbjncEq0VVaR81HQMx7Fj4IOSOVqAMkk4R6ktfKhkejDXKjOf/exec';
-        // =========================================================================
+        const i18n = {
+            en: {
+                dir: 'ltr',
+                langBtn: 'עברית',
+                heroTitle: 'Never Lose Track of Your Best Friend',
+                heroDesc: 'Every second counts when a pet is missing. Microchips require special scanners at vets, but FindYpet allows anyone with a smartphone to connect with you instantly and share your pet\'s precise location.',
+                priceBadge: 'Only 100 ₪',
+                comicTitle: 'How It Works',
+                cStep1: 'Step 1', cText1: 'Pet gets lost on an unexpected adventure.',
+                cStep2: 'Step 2', cText2: 'A passerby taps their phone to the FindYpet tag.',
+                cStep3: 'Step 3', cText3: 'You instantly get a Telegram map alert with location.',
+                cStep4: 'Step 4', cText4: 'Reunited together in just a few minutes!',
+                formTitle: 'Order & Register Your Tag',
+                lblOwnerName: 'Owner Full Name',
+                lblPhone: 'Phone Number (Israel)',
+                lblPetName: 'Pet\'s Name',
+                lblPetPhoto: 'Upload Pet Photo (For UV Print)',
+                lblAddress: 'Shipping Address',
+                btnSubmit: 'Order Now — 100 ₪'
+            },
+            he: {
+                dir: 'rtl',
+                langBtn: 'English',
+                heroTitle: 'לעולם לא מאבדים קשר עם החבר הכי טוב',
+                heroDesc: 'כשחיית מחמד הולכת לאיבוד, כל שנייה קובעת. שבב תת-עורי דורש סורק ייעודי במרפאה, אך FindYpet מאפשר לכל אדם עם סמארטפון ליצור איתכם קשר מיידי ולשלוח את המיקום המדויק.',
+                priceBadge: 'רק 100 ₪',
+                comicTitle: 'איך זה עובד?',
+                cStep1: 'שלב 1', cText1: 'הכלב יצא להרפתקה ולא מוצא את הדרך חזרה.',
+                cStep2: 'שלב 2', cText2: 'עובר אורח מקרב את הטלפון לתג ה-FindYpet.',
+                cStep3: 'שלב 3', cText3: 'אתם מקבלים התראת מפה מיידית ב-Telegram.',
+                cStep4: 'שלב 4', cText4: 'איחוד מרגש תוך דקות ספורות!',
+                formTitle: 'הזמנה ורישום תג במערכת',
+                lblOwnerName: 'שם מלא של הבעלים',
+                lblPhone: 'מספר טלפון ליצירת קשר',
+                lblPetName: 'שם חיית המחמד',
+                lblPetPhoto: 'העלאת תמונה (להדפסה על התג)',
+                lblAddress: 'כתובת למשלוח',
+                btnSubmit: 'להזמנה עכשיו — 100 ₪'
+            }
+        };
 
-        function sendLocation() {
-            const statusDiv = document.getElementById("status");
+        function toggleLanguage() {
+            currentLang = currentLang === 'en' ? 'he' : 'en';
+            const langData = i18n[currentLang];
 
-            if ("geolocation" in navigator) {
-                navigator.geolocation.getCurrentPosition(
-                    (position) => {
-                        const lat = position.coords.latitude;
-                        const lon = position.coords.longitude;
+            document.documentElement.lang = currentLang;
+            document.documentElement.dir = langData.dir;
 
-                        // Send coordinates to Google Apps Script backend
-                        fetch(SCRIPT_URL, {
-                            method: "POST",
-                            mode: "no-cors", // Required to bypass CORS rules in Google Apps Script
-                            headers: { "Content-Type": "application/json" },
-                            body: JSON.stringify({
-                                pet_id: petId,
-                                latitude: lat,
-                                longitude: lon
-                            })
-                        });
-
-                        statusDiv.innerText = "📍 Your location has been sent to the owner!";
-                        statusDiv.style.color = "#28a745";
-                    },
-                    (error) => {
-                        statusDiv.innerText = "Location not sent (access denied).";
-                        statusDiv.style.color = "#dc3545";
-                    },
-                    { enableHighAccuracy: true, timeout: 10000 }
-                );
-            } else {
-                statusDiv.innerText = "Geolocation is not supported by your browser.";
+            for (let key in langData) {
+                if (key !== 'dir') {
+                    const el = document.getElementById(key);
+                    if (el) {
+                        if (el.tagName === 'INPUT') {
+                            el.placeholder = langData[key];
+                        } else {
+                            el.innerText = langData[key];
+                        }
+                    }
+                }
             }
         }
-
-        // Trigger location request on page load
-        window.onload = sendLocation;
-    
     </script>
-
 </body>
 </html>
-
