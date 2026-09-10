@@ -160,23 +160,19 @@
             <form id="tagForm">
                 <div class="form-group">
                     <label id="lblOwnerName">Owner Full Name</label>
-                    <input type="text" required placeholder="John Doe">
+                    <input type="text" id="ownerName" required placeholder="John Doe">
                 </div>
                 <div class="form-group">
                     <label id="lblPhone">Phone Number (Israel)</label>
-                    <input type="tel" required placeholder="050-0000000">
+                    <input type="tel" id="ownerPhone" required placeholder="050-0000000">
                 </div>
                 <div class="form-group">
                     <label id="lblPetName">Pet's Name</label>
-                    <input type="text" required placeholder="Charlie">
-                </div>
-                <div class="form-group">
-                    <label id="lblPetPhoto">Upload Pet Photo (For UV Print)</label>
-                    <input type="file" accept="image/*" required>
+                    <input type="text" id="petName" required placeholder="Charlie">
                 </div>
                 <div class="form-group">
                     <label id="lblAddress">Shipping Address</label>
-                    <input type="text" required placeholder="Street, City, Apartment">
+                    <input type="text" id="shippingAddress" required placeholder="Street, City, Apartment">
                 </div>
                 <button type="submit" class="submit-btn" id="btnSubmit">Order Now — 100 ₪</button>
             </form>
@@ -202,7 +198,6 @@
                 lblOwnerName: 'Owner Full Name',
                 lblPhone: 'Phone Number (Israel)',
                 lblPetName: 'Pet\'s Name',
-                lblPetPhoto: 'Upload Pet Photo (For UV Print)',
                 lblAddress: 'Shipping Address',
                 btnSubmit: 'Order Now — 100 ₪'
             },
@@ -221,7 +216,6 @@
                 lblOwnerName: 'שם מלא של הבעלים',
                 lblPhone: 'מספר טלפון ליצירת קשר',
                 lblPetName: 'שם חיית המחמד',
-                lblPetPhoto: 'העלאת תמונה (להדפסה על התג)',
                 lblAddress: 'כתובת למשלוח',
                 btnSubmit: 'להזמנה עכשיו — 100 ₪'
             }
@@ -247,6 +241,34 @@
                 }
             }
         }
+
+        // Form Submit Handler
+        document.getElementById('tagForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Замените на ваш URL Apps Script из Шага 3
+            const REGISTRATION_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzc7V1rKb_gKTBefFaiTanvROhgIv3h7zuyxrrkcEi9WvqIl1pF0YhPUeyHAVbCEH4L/exec';
+            
+            const formData = new URLSearchParams();
+            formData.append('owner_name', document.getElementById('ownerName').value);
+            formData.append('phone', document.getElementById('ownerPhone').value);
+            formData.append('pet_name', document.getElementById('petName').value);
+            formData.append('address', document.getElementById('shippingAddress').value);
+
+            fetch(REGISTRATION_SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                body: formData
+            }).then(() => {
+                const msg = currentLang === 'en' 
+                    ? 'Thank you for your order! Your request has been accepted into the FindYpet system.' 
+                    : 'תודה על ההזמנה! הבקשה שלך נקלטה במערכת FindYpet.';
+                alert(msg);
+                document.getElementById('tagForm').reset();
+            }).catch(err => {
+                alert('Error sending. Please try again.');
+            });
+        });
     </script>
 </body>
 </html>
